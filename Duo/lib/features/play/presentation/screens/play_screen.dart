@@ -10,6 +10,7 @@ import '../providers/games_provider.dart';
 import '../widgets/tic_tac_toe_dialog.dart';
 import '../widgets/would_you_rather_dialog.dart';
 import '../widgets/truth_or_dare_dialog.dart';
+import '../widgets/date_roulette_dialog.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/localization/duo_strings.dart';
 import '../../../../core/widgets/bouncy_press.dart';
@@ -34,6 +35,13 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _openDateRoulette() {
+    showDialog(
+      context: context,
+      builder: (context) => const DateRouletteDialog(),
+    );
   }
 
   void _openTicTacToe() {
@@ -593,6 +601,19 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
     return ListView(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 100),
       children: [
+        // Game 0: Date Night Roulette (Featured)
+        _buildGameCard(
+          context,
+          title: DuoStrings.get('date_roulette_title', locale),
+          tag: locale == 'bn' ? 'স্বতঃস্ফূর্ত রোমান্স 🎡' : 'SPONTANEOUS DATES 🎡',
+          tagColor: DuoColors.accent,
+          subtitle: DuoStrings.get('date_roulette_sub', locale),
+          icon: '🎡',
+          actionText: locale == 'bn' ? 'রউলেট স্পিন করুন' : 'Spin Date Roulette',
+          onTap: _openDateRoulette,
+        ),
+        const SizedBox(height: 14),
+
         // Game 1: Tic-Tac-Toe
         _buildGameCard(
           context,

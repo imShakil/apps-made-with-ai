@@ -11,6 +11,7 @@ import '../../../../shared/providers/supabase_provider.dart';
 import '../../../memories/presentation/providers/notes_provider.dart';
 import '../../../together/presentation/providers/together_provider.dart';
 import '../../../pairing/presentation/providers/pairing_provider.dart';
+import '../../../prayer/presentation/providers/prayer_provider.dart';
 import '../providers/subscription_provider.dart';
 import 'premium_paywall_screen.dart';
 import '../../../../core/localization/locale_provider.dart';
@@ -27,6 +28,7 @@ class ProfileScreen extends ConsumerWidget {
     final currentThemeMode = ref.watch(themeModeProvider);
     final pairingState = ref.watch(pairingProvider);
     final subState = ref.watch(subscriptionProvider);
+    final prayerState = ref.watch(prayerProvider);
     final client = ref.watch(supabaseClientProvider);
 
     final currentUser = client.auth.currentUser;
@@ -260,6 +262,21 @@ class ProfileScreen extends ConsumerWidget {
                 onTap: () => _showThemeDialog(context, ref),
               ),
               _SettingsItem(
+                icon: Icons.mosque_rounded,
+                title: DuoStrings.get('prayer_tracking_title', locale),
+                subtitle: DuoStrings.get('prayer_tracking_sub', locale),
+                trailing: Switch.adaptive(
+                  value: prayerState.isEnabled,
+                  activeTrackColor: const Color(0xFF10B981),
+                  onChanged: (val) {
+                    ref.read(prayerProvider.notifier).toggleEnabled(val);
+                  },
+                ),
+                onTap: () {
+                  ref.read(prayerProvider.notifier).toggleEnabled(!prayerState.isEnabled);
+                },
+              ),
+              _SettingsItem(
                 icon: Icons.notifications_active_rounded,
                 title: DuoStrings.get('notifications', locale),
                 subtitle: locale == 'bn' ? 'দৈনিক প্রশ্ন ও চিঠি আসার সতর্কতা' : 'Daily check-in & letter delivery alerts',
@@ -411,7 +428,7 @@ class ProfileScreen extends ConsumerWidget {
                   item.subtitle,
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
+                trailing: item.trailing ?? const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
                 onTap: item.onTap,
               );
             }).toList(),
@@ -650,13 +667,15 @@ class _SettingsItem {
   final String title;
   final String subtitle;
   final bool isDestructive;
-  final VoidCallback onTap;
+  final Widget? trailing;
+  final VoidCallback? onTap;
 
   _SettingsItem({
     required this.icon,
     required this.title,
     required this.subtitle,
     this.isDestructive = false,
-    required this.onTap,
+    this.trailing,
+    this.onTap,
   });
 }

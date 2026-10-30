@@ -15,6 +15,10 @@ import '../widgets/partner_guess_dialog.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/localization/duo_strings.dart';
 import '../../../../core/localization/duo_formatters.dart';
+import '../../../prayer/presentation/providers/prayer_provider.dart';
+import '../../../prayer/presentation/widgets/prayer_tracker_card.dart';
+import '../providers/heartbeat_provider.dart';
+import '../widgets/heartbeat_button.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -176,10 +180,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final localizedStreak = DuoFormatters.formatNumber(moodState.streakDays, locale);
     final streakProgress = ((moodState.streakDays % 7) / 7.0).clamp(0.15, 1.0);
 
+    // Listen for partner's incoming heartbeat
+    ref.listen<HeartbeatState>(heartbeatProvider, (previous, next) {
+      if (next.isPulsing && next.receivedFromName != null && previous?.isPulsing != true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Text('💓', style: TextStyle(fontSize: 24)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    DuoStrings.get('heartbeat_received', locale, params: {'name': next.receivedFromName!}),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFFE11D48),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    });
+
     return Scaffold(
       appBar: DuoAppBar(
         title: DuoStrings.get('app_title', locale),
         subtitle: '$greeting • $coupleGreeting',
+        actions: const [
+          HeartbeatButton(),
+          SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 100),
@@ -368,6 +402,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
             const SizedBox(height: 16),
+
+            // Prayer & Faith Tracker (active only when enabled in Preferences)
+            if (ref.watch(prayerProvider).isEnabled) ...[
+              const PrayerTrackerCard(),
+              const SizedBox(height: 16),
+            ],
 
             // 2. Question of the Day Card (TwoTruths Engine)
             Card(

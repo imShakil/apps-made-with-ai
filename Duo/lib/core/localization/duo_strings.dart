@@ -114,8 +114,32 @@ class DuoStrings {
     'private_encryption': {'en': 'Private Encryption', 'bn': 'প্রাইভেট এনক্রিপশন'},
     'export_memories': {'en': 'Export Couple Memories', 'bn': 'স্মৃতিসমূহ সংরক্ষণ ও এক্সপোর্ট'},
     'disconnect_duo': {'en': 'Disconnect Duo', 'bn': 'ডুও সংযোগ বিচ্ছিন্ন করুন'},
-    'sign_out': {'en': 'Sign Out', 'bn': 'লগ আউট'},
     'unlock_for_both': {'en': 'Unlock for Both of Us', 'bn': 'দুজনের জন্যই আনলক করুন'},
+
+    // Prayer & Faith Tracking
+    'prayer_tracking_title': {'en': 'Prayer & Faith Tracker', 'bn': 'নামাজ ও আত্মিক সঙ্গী'},
+    'prayer_tracking_sub': {'en': 'Track 5 daily prayers with partner', 'bn': 'সাথীর সাথে পাঁচ ওয়াক্ত নামাজের ট্র্যাকার'},
+    'prayer_card_title': {'en': "TODAY'S PRAYERS", 'bn': 'আজকের নামাজ'},
+    'prayer_fajr': {'en': 'Fajr', 'bn': 'ফজর'},
+    'prayer_dhuhr': {'en': 'Dhuhr', 'bn': 'যোহর'},
+    'prayer_asr': {'en': 'Asr', 'bn': 'আসর'},
+    'prayer_maghrib': {'en': 'Maghrib', 'bn': 'মাগরিব'},
+    'prayer_isha': {'en': 'Isha', 'bn': 'এশা'},
+    'prayed_together_toast': {'en': 'Alhamdulillah! Both prayed together ✨', 'bn': 'আলহামদুলিল্লাহ! দুজনেই নামাজ আদায় করেছেন ✨'},
+    'prayer_nudge_toast': {'en': 'Gentle prayer reminder sent to partner 🤲❤️', 'bn': 'সাথীকে নামাজের ভালোবাসাময় তাগিদ পাঠানো হয়েছে 🤲❤️'},
+    'both_completed_all': {'en': 'All 5 prayers completed together today! 🤲✨', 'bn': 'আজকের সব কয়টি নামাজ দুজনেই সম্পন্ন করেছেন! 🤲✨'},
+
+    // Heartbeat Pulse
+    'heartbeat_tooltip': {'en': 'Send Heartbeat Pulse 💓', 'bn': 'হৃদস্পন্দন পাঠান 💓'},
+    'heartbeat_sent': {'en': 'Heartbeat sent! Thinking of you ❤️', 'bn': 'হৃদস্পন্দন পৌঁছে গেছে! তোমার কথাই ভাবছি ❤️'},
+    'heartbeat_received': {'en': '{name} is thinking of you! 💓', 'bn': '{name} তোমার কথাই ভাবছেন! 💓'},
+
+    // Date Night Roulette
+    'date_roulette_title': {'en': 'Date Night Roulette 🎡', 'bn': 'ডেট নাইট রউলেট 🎡'},
+    'date_roulette_sub': {'en': 'Can’t decide? Spin for spontaneous couple date ideas!', 'bn': 'কী করবেন ভেবে পাচ্ছেন না? নতুন ডেট আইডিয়ার জন্য স্পিন করুন!'},
+    'spin_date_btn': {'en': 'Spin for Next Date! 🎡', 'bn': 'স্পিন করুন! 🎡'},
+    'add_to_dreams_btn': {'en': 'Add to Our Dreams 📝', 'bn': 'আমাদের স্বপ্নে যুক্ত করুন 📝'},
+    'saved_to_dreams_toast': {'en': 'Added to your couple bucket list! ✨', 'bn': 'আপনাদের স্বপ্নের তালিকায় যুক্ত হয়েছে! ✨'},
   };
 
   static String get(String key, String locale, {Map<String, String>? params}) {
