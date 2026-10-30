@@ -164,6 +164,19 @@ class DuoStrings {
     'holding_status_you': {'en': 'You are holding 💓', 'bn': 'আপনি ধরে রেখেছেন 💓'},
     'holding_status_partner': {'en': '{name} is holding too! 💖', 'bn': '{name}-ও ধরে রেখেছেন! 💖'},
     'connected_celebration': {'en': 'Connected at Heart! 💖✨', 'bn': 'হৃদয়ে হৃদয়ে মিলন ঘটেছে! 💖✨'},
+
+    // Feature 7: Couple Wrapped Recap
+    'wrapped_title': {'en': 'Our Couple Wrapped 🎁✨', 'bn': 'আমাদের কাপল রিক্যাপ 🎁✨'},
+    'wrapped_sub': {'en': 'Relive your sweetest milestones and love stats', 'bn': 'আপনাদের সেরা সব স্মৃতি ও পরিসংখ্যান পুনরায় দেখুন'},
+    'wrapped_btn': {'en': 'Open Story Recap 🎁', 'bn': 'রিক্যাপ স্টোরি দেখুন 🎁'},
+
+    // Feature 8: Home Screen Widgets
+    'widget_preview_title': {'en': 'Home Screen Widgets 📱', 'bn': 'হোমস্ক্রিন উইজেট 📱'},
+    'widget_preview_sub': {'en': 'Add live partner mood & countdown to your phone screen', 'bn': 'ফোনের হোমস্ক্রিনে সাথীর মুড ও কাউন্টডাউন রাখুন'},
+    'widget_size_small': {'en': 'Small Widget', 'bn': 'ছোট উইজেট'},
+    'widget_size_medium': {'en': 'Medium Widget', 'bn': 'মাঝারি উইজেট'},
+    'widget_size_lockscreen': {'en': 'Lock Screen', 'bn': 'লক স্ক্রিন'},
+    'widget_token_copied': {'en': 'Widget space token copied! Ready to sync.', 'bn': 'উইজেট স্পেস টোকেন কপি হয়েছে!'},
   };
 
   static String get(String key, String locale, {Map<String, String>? params}) {

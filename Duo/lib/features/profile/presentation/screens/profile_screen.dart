@@ -14,6 +14,8 @@ import '../../../pairing/presentation/providers/pairing_provider.dart';
 import '../../../prayer/presentation/providers/prayer_provider.dart';
 import '../providers/subscription_provider.dart';
 import 'premium_paywall_screen.dart';
+import '../widgets/couple_wrapped_sheet.dart';
+import '../widgets/widget_preview_dialog.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/localization/duo_strings.dart';
 import '../../../../core/localization/duo_formatters.dart';
@@ -242,6 +244,82 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: 14),
+
+          // 2.5 Couple Wrapped Story Banner
+          BouncyPress(
+            semanticsLabel: DuoStrings.get('wrapped_title', locale),
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                useRootNavigator: true,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => const CoupleWrappedSheet(),
+              );
+            },
+            child: Card(
+              color: isDark ? const Color(0xFF231C30) : const Color(0xFFF9F0FF),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(color: DuoColors.secondary.withValues(alpha: 0.35)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [DuoColors.primary, DuoColors.secondary],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text('🎁', style: TextStyle(fontSize: 20)),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                DuoStrings.get('wrapped_title', locale),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: DuoColors.secondary,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text(
+                                  '2026',
+                                  style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            DuoStrings.get('wrapped_sub', locale),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
+                  ],
+                ),
+              ),
+            ),
+          ),
           const SizedBox(height: 20),
 
           // 3. Preferences Section
@@ -274,6 +352,17 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 onTap: () {
                   ref.read(prayerProvider.notifier).toggleEnabled(!prayerState.isEnabled);
+                },
+              ),
+              _SettingsItem(
+                icon: Icons.widgets_rounded,
+                title: DuoStrings.get('widget_preview_title', locale),
+                subtitle: DuoStrings.get('widget_preview_sub', locale),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => const WidgetPreviewDialog(),
+                  );
                 },
               ),
               _SettingsItem(

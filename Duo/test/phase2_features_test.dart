@@ -49,15 +49,11 @@ void main() {
 
   group('Feature 6: Virtual Hug & Proximity Touch', () {
     test('Simultaneous hold triggers connected celebration', () {
-      bool isHolding = true;
-      bool isPartnerHolding = true;
-      bool bothConnected = isHolding && isPartnerHolding;
+      bool checkConnected(bool me, bool partner) => me && partner;
 
-      expect(bothConnected, isTrue);
-
-      isHolding = false;
-      bothConnected = isHolding && isPartnerHolding;
-      expect(bothConnected, isFalse);
+      expect(checkConnected(true, true), isTrue);
+      expect(checkConnected(false, true), isFalse);
+      expect(checkConnected(true, false), isFalse);
     });
   });
 }
