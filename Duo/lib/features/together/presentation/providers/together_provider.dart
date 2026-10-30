@@ -393,6 +393,69 @@ class TogetherNotifier extends StateNotifier<TogetherState> {
     return true;
   }
 
+  Future<bool> updateCountdownEvent({
+    required String id,
+    required String title,
+    required DateTime targetDate,
+    String icon = '💍',
+  }) async {
+    final cleanTitle = title.trim();
+    if (cleanTitle.isEmpty) return false;
+
+    final pairingState = _ref.read(pairingProvider);
+    final duoId = pairingState.space?['id'] as String?;
+
+    final dateStr = '${targetDate.year}-${targetDate.month.toString().padLeft(2, '0')}-${targetDate.day.toString().padLeft(2, '0')}';
+
+    // Optimistic update
+    final updatedList = state.countdowns.map((cd) {
+      if (cd['id'] == id) {
+        return {
+          ...cd,
+          'title': cleanTitle,
+          'event_date': dateStr,
+          'target_date': dateStr,
+          'icon': icon,
+          'category': icon,
+        };
+      }
+      return cd;
+    }).toList();
+    updatedList.sort((a, b) => (a['target_date'] as String? ?? '').compareTo(b['target_date'] as String? ?? ''));
+    state = state.copyWith(countdowns: updatedList);
+
+    if (duoId != null && !id.startsWith('local_')) {
+      try {
+        await _client.from('countdown_events').update({
+          'title': cleanTitle,
+          'event_date': dateStr,
+          'category': icon,
+        }).eq('id', id);
+
+        await loadAll(duoId);
+      } catch (_) {}
+    }
+    return true;
+  }
+
+  Future<bool> deleteCountdownEvent(String id) async {
+    final pairingState = _ref.read(pairingProvider);
+    final duoId = pairingState.space?['id'] as String?;
+
+    // Optimistic delete
+    state = state.copyWith(
+      countdowns: state.countdowns.where((cd) => cd['id'] != id).toList(),
+    );
+
+    if (duoId != null && !id.startsWith('local_')) {
+      try {
+        await _client.from('countdown_events').delete().eq('id', id);
+        await loadAll(duoId);
+      } catch (_) {}
+    }
+    return true;
+  }
+
   @override
   void dispose() {
     _countdownsSub?.unsubscribe();

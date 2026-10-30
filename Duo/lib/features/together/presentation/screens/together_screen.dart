@@ -35,7 +35,7 @@ class _TogetherScreenState extends ConsumerState<TogetherScreen> {
     );
   }
 
-  void _openAddCountdown(BuildContext context) {
+  void _openCountdownSheet(BuildContext context, {Map<String, dynamic>? event}) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -44,7 +44,7 @@ class _TogetherScreenState extends ConsumerState<TogetherScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      builder: (context) => const AddCountdownSheet(),
+      builder: (context) => AddCountdownSheet(existingEvent: event),
     );
   }
 
@@ -112,7 +112,7 @@ class _TogetherScreenState extends ConsumerState<TogetherScreen> {
           IconButton(
             tooltip: DuoStrings.get('add_countdown', locale),
             icon: const Icon(Icons.alarm_add_rounded, size: 26),
-            onPressed: () => _openAddCountdown(context),
+            onPressed: () => _openCountdownSheet(context),
           ),
           const SizedBox(width: 8),
         ],
@@ -137,7 +137,8 @@ class _TogetherScreenState extends ConsumerState<TogetherScreen> {
             // 1. Anniversary Countdown Hero Banner
             if (heroEvent != null) ...[
               BouncyPress(
-                semanticsLabel: heroEvent['title'] ?? 'Our Special Milestone',
+                semanticsLabel: '${heroEvent['title'] ?? 'Our Special Milestone'}: Tap to edit date',
+                onTap: () => _openCountdownSheet(context, event: heroEvent),
                 child: Card(
                   color: isDark ? DuoColors.cardDark : DuoColors.surfaceWarm,
                   child: Padding(
@@ -157,7 +158,21 @@ class _TogetherScreenState extends ConsumerState<TogetherScreen> {
                                 color: DuoColors.primary,
                               ),
                             ),
-                            Text(heroEvent['icon'] ?? '💍', style: const TextStyle(fontSize: 22)),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: DuoColors.primary.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(heroEvent['icon'] ?? '💍', style: const TextStyle(fontSize: 18)),
+                                  const SizedBox(width: 4),
+                                  const Icon(Icons.edit_calendar_rounded, size: 14, color: DuoColors.primary),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),
@@ -166,9 +181,18 @@ class _TogetherScreenState extends ConsumerState<TogetherScreen> {
                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          _formatDate(heroEvent['target_date'] as String?, locale),
-                          style: const TextStyle(fontSize: 13, color: Colors.grey),
+                        Row(
+                          children: [
+                            Text(
+                              _formatDate(heroEvent['target_date'] as String?, locale),
+                              style: const TextStyle(fontSize: 13, color: Colors.grey),
+                            ),
+                            const SizedBox(width: 6),
+                            const Text(
+                              '• Tap to change date',
+                              style: TextStyle(fontSize: 11, color: DuoColors.primary, fontWeight: FontWeight.w600),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 18),
                         Row(
@@ -209,7 +233,7 @@ class _TogetherScreenState extends ConsumerState<TogetherScreen> {
                         style: ElevatedButton.styleFrom(backgroundColor: DuoColors.primary),
                         icon: const Icon(Icons.add_alarm_rounded, size: 18),
                         label: Text(DuoStrings.get('add_countdown', locale)),
-                        onPressed: () => _openAddCountdown(context),
+                        onPressed: () => _openCountdownSheet(context),
                       ),
                     ],
                   ),
@@ -235,19 +259,31 @@ class _TogetherScreenState extends ConsumerState<TogetherScreen> {
                 return Card(
                   margin: const EdgeInsets.only(bottom: 8),
                   child: ListTile(
+                    onTap: () => _openCountdownSheet(context, event: cd),
                     leading: Text(icon, style: const TextStyle(fontSize: 22)),
                     title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                     subtitle: Text(_formatDate(targetStr, locale), style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: DuoColors.accent.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '${DuoFormatters.formatNumber(days, locale)}d left',
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFD49B00)),
-                      ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: isDark ? DuoColors.accent.withValues(alpha: 0.22) : const Color(0xFFFEF3C7),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            '${DuoFormatters.formatNumber(days, locale)}d left',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: DuoColors.getAccessibleTextColor(DuoColors.accent, isDark: isDark),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.edit_rounded, size: 16, color: Colors.grey),
+                      ],
                     ),
                   ),
                 );
