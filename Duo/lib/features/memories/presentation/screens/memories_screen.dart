@@ -10,6 +10,7 @@ import '../providers/notes_provider.dart';
 import '../widgets/note_composer_sheet.dart';
 import '../widgets/note_reader_dialog.dart';
 import '../widgets/add_photo_moment_sheet.dart';
+import '../widgets/journey_calendar_view.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/localization/duo_strings.dart';
 import '../../../../core/localization/duo_formatters.dart';
@@ -28,7 +29,7 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> with SingleTick
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -162,6 +163,7 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> with SingleTick
                 tabs: [
                   Tab(text: '${DuoStrings.get('tab_letters', locale)} (${letters.length})'),
                   Tab(text: '${DuoStrings.get('tab_photos', locale)} (${photoMoments.length})'),
+                  Tab(text: DuoStrings.get('tab_journey', locale)),
                 ],
               ),
             ),
@@ -172,6 +174,7 @@ class _MemoriesScreenState extends ConsumerState<MemoriesScreen> with SingleTick
               children: [
                 _buildLettersTab(context, letters, notesState.unopenedNote, partnerName, myId, isDark, locale),
                 _buildPhotoMomentsTab(context, photoMoments, partnerName, isDark, locale),
+                const JourneyCalendarView(),
               ],
             ),
           ),

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/duo_colors.dart';
 import '../models/stationery_theme.dart';
@@ -22,20 +24,74 @@ class _NoteComposerSheetState extends ConsumerState<NoteComposerSheet> {
   StationeryTheme _selectedTheme = StationeryTheme.all.first;
   bool _isSending = false;
 
+  bool _hasVoiceWhisper = false;
+  bool _isRecordingWhisper = false;
+  int _whisperSeconds = 0;
+  Timer? _whisperTimer;
+
   @override
   void dispose() {
+    _whisperTimer?.cancel();
     _titleController.dispose();
     _bodyController.dispose();
     super.dispose();
   }
 
+  void _startWhisperRecording() {
+    HapticFeedback.mediumImpact();
+    setState(() {
+      _isRecordingWhisper = true;
+      _whisperSeconds = 0;
+      _hasVoiceWhisper = false;
+    });
+
+    _whisperTimer?.cancel();
+    _whisperTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+      if (_whisperSeconds >= 15) {
+        _stopWhisperRecording();
+      } else {
+        setState(() => _whisperSeconds++);
+        HapticFeedback.selectionClick();
+      }
+    });
+  }
+
+  void _stopWhisperRecording() {
+    _whisperTimer?.cancel();
+    HapticFeedback.heavyImpact();
+    if (mounted) {
+      setState(() {
+        _isRecordingWhisper = false;
+        _hasVoiceWhisper = true;
+      });
+    }
+  }
+
+  void _removeWhisper() {
+    _whisperTimer?.cancel();
+    setState(() {
+      _hasVoiceWhisper = false;
+      _isRecordingWhisper = false;
+      _whisperSeconds = 0;
+    });
+  }
+
   Future<void> _send() async {
-    final body = _bodyController.text.trim();
-    if (body.isEmpty) {
+    var body = _bodyController.text.trim();
+    if (body.isEmpty && !_hasVoiceWhisper) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please write your note before sending.')),
+        const SnackBar(content: Text('Please write your note or attach a voice whisper before sending.')),
       );
       return;
+    }
+
+    if (body.isEmpty) {
+      body = 'A special voice whisper for you 🎙️';
+    }
+
+    if (_hasVoiceWhisper) {
+      body = '$body\n\n[VOICE_WHISPER]:15s';
     }
 
     setState(() => _isSending = true);
@@ -204,7 +260,85 @@ class _NoteComposerSheetState extends ConsumerState<NoteComposerSheet> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
+
+            // 15s Voice Whisper Recorder Widget
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: _hasVoiceWhisper
+                    ? const Color(0xFF10B981).withValues(alpha: 0.1)
+                    : (_isRecordingWhisper
+                        ? const Color(0xFFE11D48).withValues(alpha: 0.1)
+                        : Colors.black.withValues(alpha: 0.04)),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _hasVoiceWhisper
+                      ? const Color(0xFF10B981).withValues(alpha: 0.3)
+                      : (_isRecordingWhisper
+                          ? const Color(0xFFE11D48).withValues(alpha: 0.4)
+                          : Colors.grey.withValues(alpha: 0.2)),
+                ),
+              ),
+              child: Row(
+                children: [
+                  if (_isRecordingWhisper) ...[
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE11D48),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Recording... 00:${_whisperSeconds.toString().padLeft(2, '0')} / 00:15',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFE11D48)),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFE11D48),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      ),
+                      onPressed: _stopWhisperRecording,
+                      child: const Text('Finish', style: TextStyle(fontSize: 12, color: Colors.white)),
+                    ),
+                  ] else if (_hasVoiceWhisper) ...[
+                    const Text('🎙️', style: TextStyle(fontSize: 20)),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: Text(
+                        '15s Voice Whisper attached! 🎙️✨',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF047857)),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.redAccent),
+                      onPressed: _removeWhisper,
+                    ),
+                  ] else ...[
+                    const Text('🎙️', style: TextStyle(fontSize: 20)),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: Text(
+                        'Add 15s Voice Whisper',
+                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                      ),
+                    ),
+                    TextButton.icon(
+                      style: TextButton.styleFrom(foregroundColor: DuoColors.primary),
+                      icon: const Icon(Icons.mic_rounded, size: 18),
+                      label: const Text('Record'),
+                      onPressed: _startWhisperRecording,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
 
             // Submit Button
             SizedBox(

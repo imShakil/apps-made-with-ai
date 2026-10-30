@@ -140,6 +140,30 @@ class DuoStrings {
     'spin_date_btn': {'en': 'Spin for Next Date! 🎡', 'bn': 'স্পিন করুন! 🎡'},
     'add_to_dreams_btn': {'en': 'Add to Our Dreams 📝', 'bn': 'আমাদের স্বপ্নে যুক্ত করুন 📝'},
     'saved_to_dreams_toast': {'en': 'Added to your couple bucket list! ✨', 'bn': 'আপনাদের স্বপ্নের তালিকায় যুক্ত হয়েছে! ✨'},
+
+    // Monthly Journey Calendar
+    'tab_journey': {'en': 'Journey 📅', 'bn': 'ক্যালেন্ডার 📅'},
+    'journey_calendar_title': {'en': 'Journey Calendar', 'bn': 'স্মৃতি ক্যালেন্ডার'},
+    'journey_calendar_sub': {'en': 'Our love footprints day by day', 'bn': 'প্রতিটি দিনের রোমান্টিক পদচিহ্ন'},
+    'on_this_day': {'en': 'On This Day', 'bn': 'এই বিশেষ দিনে'},
+    'no_memories_day': {'en': 'A quiet, sweet day together 💕', 'bn': 'একসাথে একটি শান্ত, মিষ্টি দিন 💕'},
+    'recorded_memories': {'en': 'Letters & Moments', 'bn': 'চিঠি ও মুহূর্ত'},
+    'prayers_done': {'en': 'Prayers Completed', 'bn': 'আদায়কৃত নামাজ'},
+
+    // 15s Voice Whispers
+    'voice_whisper_title': {'en': '15s Voice Whisper 🎙️', 'bn': '১৫ সেকেন্ডের ভয়েস নোট 🎙️'},
+    'record_whisper_btn': {'en': 'Record Voice Whisper', 'bn': 'ভয়েস রেকর্ড করুন'},
+    'recording_audio': {'en': 'Listening to your heart... (max 15s)', 'bn': 'আপনার মনের কথা শুনছি... (সর্বোচ্চ ১৫ সেকেন্ড)'},
+    'whisper_attached': {'en': '15s Voice Whisper attached 🎙️✨', 'bn': '১৫ সেকেন্ডের ভয়েস নোট যুক্ত হয়েছে 🎙️✨'},
+    'listen_whisper': {'en': 'Play Love Whisper', 'bn': 'ভালোবাসার ভয়েস শুনুন'},
+
+    // Virtual Hug & Proximity Touch
+    'virtual_hug_title': {'en': 'Proximity Touch & Hug 🫂', 'bn': 'ভার্চুয়াল স্পর্শ ও জড়িয়ে ধরা 🫂'},
+    'virtual_hug_sub': {'en': 'Hold your thumbs together to feel each other across distance', 'bn': 'দূরত্ব ঘুচিয়ে একে অপরকে অনুভব করতে স্ক্রিনে স্পর্শ ধরে রাখুন'},
+    'hold_together_prompt': {'en': 'Place & hold your thumb on the heart', 'bn': 'হৃদয়ের ওপর আপনার আঙুল ধরে রাখুন'},
+    'holding_status_you': {'en': 'You are holding 💓', 'bn': 'আপনি ধরে রেখেছেন 💓'},
+    'holding_status_partner': {'en': '{name} is holding too! 💖', 'bn': '{name}-ও ধরে রেখেছেন! 💖'},
+    'connected_celebration': {'en': 'Connected at Heart! 💖✨', 'bn': 'হৃদয়ে হৃদয়ে মিলন ঘটেছে! 💖✨'},
   };
 
   static String get(String key, String locale, {Map<String, String>? params}) {

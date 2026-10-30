@@ -19,6 +19,7 @@ import '../../../prayer/presentation/providers/prayer_provider.dart';
 import '../../../prayer/presentation/widgets/prayer_tracker_card.dart';
 import '../providers/heartbeat_provider.dart';
 import '../widgets/heartbeat_button.dart';
+import '../widgets/proximity_hug_dialog.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -111,26 +112,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _sendQuickHug(BuildContext context, String locale) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Text('🤗', style: TextStyle(fontSize: 22)),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                DuoStrings.get('hug_sent_toast', locale),
-                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: DuoColors.primary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        duration: const Duration(seconds: 2),
-      ),
+  void _openProximityHug(BuildContext context, String partnerName) {
+    showDialog(
+      context: context,
+      builder: (context) => ProximityHugDialog(partnerName: partnerName),
     );
   }
 
@@ -601,7 +586,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Expanded(
                   child: BouncyPress(
                     semanticsLabel: DuoStrings.get('send_hug', locale),
-                    onTap: () => _sendQuickHug(context, locale),
+                    onTap: () => _openProximityHug(context, partnerName),
                     child: Card(
                       color: isDark ? DuoColors.cardDark : DuoColors.surfaceWarm,
                       child: Padding(

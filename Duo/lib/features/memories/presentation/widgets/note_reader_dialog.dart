@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../shared/providers/supabase_provider.dart';
 import '../models/stationery_theme.dart';
 import '../providers/notes_provider.dart';
+import 'voice_whisper_player.dart';
 
 class NoteReaderDialog extends ConsumerStatefulWidget {
   final Map<String, dynamic> note;
@@ -47,7 +48,9 @@ class _NoteReaderDialogState extends ConsumerState<NoteReaderDialog> {
     final theme = StationeryTheme.getById(themeId);
 
     final title = widget.note['title'] as String?;
-    final body = widget.note['body'] as String? ?? '';
+    final rawBody = widget.note['body'] as String? ?? '';
+    final hasVoiceWhisper = rawBody.contains('[VOICE_WHISPER]:');
+    final body = rawBody.replaceAll(RegExp(r'\[VOICE_WHISPER\]:[^\s]+'), '').trim();
     final createdAt = widget.note['created_at'] as String?;
     final senderName = (widget.note['users'] as Map<String, dynamic>?)?['display_name'] as String? ?? 'Your Love';
 
@@ -128,6 +131,14 @@ class _NoteReaderDialogState extends ConsumerState<NoteReaderDialog> {
                     fontWeight: FontWeight.bold,
                     color: theme.textColor,
                   ),
+                ),
+                const SizedBox(height: 12),
+              ],
+
+              if (hasVoiceWhisper) ...[
+                VoiceWhisperPlayer(
+                  textColor: theme.textColor,
+                  accentColor: theme.accentColor,
                 ),
                 const SizedBox(height: 12),
               ],
