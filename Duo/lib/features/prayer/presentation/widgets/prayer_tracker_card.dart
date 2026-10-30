@@ -317,27 +317,26 @@ class PrayerTrackerCard extends ConsumerWidget {
         message: '$label: ${isMe ? "You prayed" : "Not yet"} | $partnerName: ${isPartner ? "Prayed" : "Not yet"} (Long press to nudge)',
         child: BouncyPress(
           semanticsLabel: label,
+          behavior: HitTestBehavior.opaque,
           onTap: () {
             HapticFeedback.lightImpact();
             ref.read(prayerProvider.notifier).togglePrayer(prayerKey);
           },
-          child: InkWell(
-            onLongPress: () async {
-              HapticFeedback.mediumImpact();
-              final sent = await ref.read(prayerProvider.notifier).sendPrayerNudge(prayerKey, partnerName, myName);
-              if (sent && context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(DuoStrings.get('prayer_nudge_toast', locale)),
-                    backgroundColor: const Color(0xFF047857),
-                    behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              }
-            },
-            borderRadius: BorderRadius.circular(14),
-            child: AnimatedContainer(
+          onLongPress: () async {
+            HapticFeedback.mediumImpact();
+            final sent = await ref.read(prayerProvider.notifier).sendPrayerNudge(prayerKey, partnerName, myName);
+            if (sent && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(DuoStrings.get('prayer_nudge_toast', locale)),
+                  backgroundColor: const Color(0xFF047857),
+                  behavior: SnackBarBehavior.floating,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            }
+          },
+          child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
               decoration: BoxDecoration(
@@ -418,7 +417,6 @@ class PrayerTrackerCard extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

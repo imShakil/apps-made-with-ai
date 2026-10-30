@@ -211,33 +211,32 @@ class _DateRouletteDialogState extends ConsumerState<DateRouletteDialog> {
           children: [
             // Header
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: DuoColors.accent.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: DuoColors.accent.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Text('🎡', style: TextStyle(fontSize: 22)),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DuoStrings.get('date_roulette_title', locale),
+                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                       ),
-                      child: const Text('🎡', style: TextStyle(fontSize: 22)),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          DuoStrings.get('date_roulette_title', locale),
-                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          locale == 'bn' ? 'স্বতঃস্ফূর্ত ডেট আইডিয়া' : 'Spontaneous date ideas',
-                          style: const TextStyle(fontSize: 11, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ],
+                      Text(
+                        locale == 'bn' ? 'স্বতঃস্ফূর্ত ডেট আইডিয়া' : 'Spontaneous date ideas',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close_rounded, size: 20),
