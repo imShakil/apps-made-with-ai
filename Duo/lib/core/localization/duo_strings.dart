@@ -135,7 +135,7 @@ class DuoStrings {
     'heartbeat_received': {'en': '{name} is thinking of you! 💓', 'bn': '{name} তোমার কথাই ভাবছেন! 💓'},
 
     // Date Night Roulette
-    'date_roulette_title': {'en': 'Date Night Roulette 🎡', 'bn': 'ডেট নাইট রউলেট 🎡'},
+    'date_roulette_title': {'en': 'Date Night Roulette', 'bn': 'ডেট নাইট রউলেট'},
     'date_roulette_sub': {'en': 'Can’t decide? Spin for spontaneous couple date ideas!', 'bn': 'কী করবেন ভেবে পাচ্ছেন না? নতুন ডেট আইডিয়ার জন্য স্পিন করুন!'},
     'spin_date_btn': {'en': 'Spin for Next Date! 🎡', 'bn': 'স্পিন করুন! 🎡'},
     'add_to_dreams_btn': {'en': 'Add to Our Dreams 📝', 'bn': 'আমাদের স্বপ্নে যুক্ত করুন 📝'},

@@ -298,15 +298,19 @@ class _DateRouletteDialogState extends ConsumerState<DateRouletteDialog> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: DuoColors.accent.withValues(alpha: 0.2),
+                          color: isDark ? DuoColors.accent.withValues(alpha: 0.22) : const Color(0xFFFEF3C7),
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: DuoColors.getAccessibleTextColor(DuoColors.accent, isDark: isDark).withValues(alpha: isDark ? 0.35 : 0.2),
+                          ),
                         ),
                         child: Text(
                           '${currentIdea.vibeIcon} ${currentIdea.vibe.toUpperCase()}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
-                            color: DuoColors.accent,
+                            letterSpacing: 0.4,
+                            color: DuoColors.getAccessibleTextColor(DuoColors.accent, isDark: isDark),
                           ),
                         ),
                       ),
@@ -448,7 +452,7 @@ class _DateRouletteDialogState extends ConsumerState<DateRouletteDialog> {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected
-              ? DuoColors.accent
+              ? DuoColors.primary
               : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05)),
           borderRadius: BorderRadius.circular(12),
         ),

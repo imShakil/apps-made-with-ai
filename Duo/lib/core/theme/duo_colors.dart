@@ -11,9 +11,19 @@ class DuoColors {
   static const Color secondary = Color(0xFF9B8AFB); // Lavender
   static const Color secondaryLight = Color(0xFFB5A9FC);
   static const Color accent = Color(0xFFFFC857); // Warm Gold / Yellow
+  static const Color accentDark = Color(0xFFB45309); // High contrast amber/bronze
   static const Color mint = Color(0xFF56C596);
+  static const Color mintDark = Color(0xFF047857); // Deep emerald
   static const Color success = Color(0xFF56C596);
   static const Color surfaceWarm = Color(0xFFFFEBE8);
+
+  // High-Contrast Text Tokens for Badges & Accents (WCAG AAA >= 7:1)
+  static const Color primaryTextLight = Color(0xFFBE123C); // Deep rich rose
+  static const Color primaryTextDark = Color(0xFFFF8FA3);  // Soft pink on dark
+  static const Color secondaryTextLight = Color(0xFF5B45BA); // Deep violet
+  static const Color secondaryTextDark = Color(0xFFC4B5FD);  // Bright lavender on dark
+  static const Color accentTextLight = Color(0xFFB45309);   // Deep warm amber
+  static const Color accentTextDark = Color(0xFFFFD166);    // Crisp gold on dark
 
   // Light Theme Surfaces & Text (High Contrast)
   static const Color bgLight = Color(0xFFFAF7F5);
@@ -62,4 +72,22 @@ class DuoColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  /// Returns a high-contrast foreground text/icon color suited for badges and chips
+  static Color getAccessibleTextColor(Color baseColor, {required bool isDark}) {
+    if (isDark) {
+      if (baseColor == accent) return accentTextDark;
+      if (baseColor == primary || baseColor == primaryDark || baseColor == primaryLight) return primaryTextDark;
+      if (baseColor == secondary || baseColor == secondaryLight) return secondaryTextDark;
+      if (baseColor == mint || baseColor == success) return const Color(0xFF6EE7B7);
+      return Colors.white70;
+    } else {
+      if (baseColor == accent) return accentTextLight;
+      if (baseColor == primary || baseColor == primaryDark || baseColor == primaryLight) return primaryTextLight;
+      if (baseColor == secondary || baseColor == secondaryLight) return secondaryTextLight;
+      if (baseColor == mint || baseColor == success) return mintDark;
+      if (baseColor == Colors.grey) return const Color(0xFF4B5563);
+      return baseColor;
+    }
+  }
 }

@@ -108,7 +108,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
                     ),
                   ],
                 ),
-                labelColor: DuoColors.primary,
+                labelColor: isDark ? DuoColors.primaryLight : const Color(0xFFBE123C),
                 unselectedLabelColor: isDark ? DuoColors.textMutedDark : DuoColors.textMutedLight,
                 labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                 unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
@@ -157,22 +157,26 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
                   children: [
                     Text(
                       DuoStrings.get('daily_quiz_tag', locale),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.8,
-                        color: DuoColors.secondary,
+                        color: DuoColors.getAccessibleTextColor(DuoColors.secondary, isDark: isDark),
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: DuoColors.secondary.withValues(alpha: 0.12),
+                        color: isDark ? DuoColors.secondary.withValues(alpha: 0.2) : const Color(0xFFEDE9FE),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         category,
-                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: DuoColors.secondary),
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: DuoColors.getAccessibleTextColor(DuoColors.secondary, isDark: isDark),
+                        ),
                       ),
                     ),
                   ],
@@ -315,6 +319,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
           children: [
             Expanded(
               child: _buildCategoryChip(
+                context,
                 DuoStrings.get('cat_deep', locale),
                 Icons.favorite_rounded,
                 DuoColors.primary,
@@ -324,6 +329,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
             const SizedBox(width: 10),
             Expanded(
               child: _buildCategoryChip(
+                context,
                 DuoStrings.get('cat_romance', locale),
                 Icons.auto_awesome_rounded,
                 DuoColors.secondary,
@@ -337,6 +343,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
           children: [
             Expanded(
               child: _buildCategoryChip(
+                context,
                 DuoStrings.get('cat_memories', locale),
                 Icons.photo_library_rounded,
                 DuoColors.accent,
@@ -346,6 +353,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
             const SizedBox(width: 10),
             Expanded(
               child: _buildCategoryChip(
+                context,
                 DuoStrings.get('cat_playful', locale),
                 Icons.sentiment_very_satisfied_rounded,
                 DuoColors.mint,
@@ -358,28 +366,38 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
     );
   }
 
-  Widget _buildCategoryChip(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildCategoryChip(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accessibleColor = DuoColors.getAccessibleTextColor(color, isDark: isDark);
+    final bgColor = isDark
+        ? color.withValues(alpha: 0.18)
+        : (color == DuoColors.accent
+            ? const Color(0xFFFEF3C7)
+            : (color == DuoColors.secondary
+                ? const Color(0xFFEDE9FE)
+                : color.withValues(alpha: 0.12)));
+
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
+          color: bgColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          border: Border.all(color: accessibleColor.withValues(alpha: isDark ? 0.35 : 0.2)),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 20, color: color),
+            Icon(icon, size: 20, color: accessibleColor),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: accessibleColor),
               ),
             ),
-            Icon(Icons.arrow_forward_ios_rounded, size: 12, color: color),
+            Icon(Icons.arrow_forward_ios_rounded, size: 12, color: accessibleColor),
           ],
         ),
       ),
@@ -583,6 +601,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
   }
 
   Widget _buildMiniGamesTab(BuildContext context, String partnerName, String locale) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final tttState = ref.watch(ticTacToeProvider);
 
     String tttTag;
@@ -604,8 +623,9 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
         // Game 0: Date Night Roulette (Featured)
         _buildGameCard(
           context,
+          isDark: isDark,
           title: DuoStrings.get('date_roulette_title', locale),
-          tag: locale == 'bn' ? 'স্বতঃস্ফূর্ত রোমান্স 🎡' : 'SPONTANEOUS DATES 🎡',
+          tag: locale == 'bn' ? 'স্পন্টেনিয়াস' : 'SPONTANEOUS',
           tagColor: DuoColors.accent,
           subtitle: DuoStrings.get('date_roulette_sub', locale),
           icon: '🎡',
@@ -617,6 +637,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
         // Game 1: Tic-Tac-Toe
         _buildGameCard(
           context,
+          isDark: isDark,
           title: DuoStrings.get('game_ttt_title', locale),
           tag: tttTag,
           tagColor: tttColor,
@@ -632,6 +653,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
         // Game 2: Would You Rather
         _buildGameCard(
           context,
+          isDark: isDark,
           title: DuoStrings.get('game_wyr_title', locale),
           tag: locale == 'bn' ? 'যুগল সিদ্ধান্ত' : 'COUPLE DILEMMAS',
           tagColor: DuoColors.secondary,
@@ -647,6 +669,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
         // Game 3: Truth or Dare
         _buildGameCard(
           context,
+          isDark: isDark,
           title: DuoStrings.get('game_tod_title', locale),
           tag: locale == 'bn' ? 'রোমান্স ও চ্যালেঞ্জ' : 'ROMANCE & DARES',
           tagColor: DuoColors.accent,
@@ -664,6 +687,7 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
 
   Widget _buildGameCard(
     BuildContext context, {
+    required bool isDark,
     required String title,
     required String tag,
     required Color tagColor,
@@ -672,6 +696,15 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
     required String actionText,
     required VoidCallback onTap,
   }) {
+    final tagTextColor = DuoColors.getAccessibleTextColor(tagColor, isDark: isDark);
+    final tagBgColor = isDark
+        ? tagColor.withValues(alpha: 0.22)
+        : (tagColor == DuoColors.accent
+            ? const Color(0xFFFEF3C7)
+            : (tagColor == DuoColors.secondary
+                ? const Color(0xFFEDE9FE)
+                : tagColor.withValues(alpha: 0.12)));
+
     return BouncyPress(
       semanticsLabel: '$title: $actionText',
       onTap: onTap,
@@ -682,29 +715,52 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(icon, style: const TextStyle(fontSize: 32)),
-                  const SizedBox(width: 14),
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04),
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(icon, style: const TextStyle(fontSize: 24)),
+                  ),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Text(
-                              title,
-                              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                            const Spacer(),
+                            const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: tagColor.withValues(alpha: 0.14),
+                                color: tagBgColor,
                                 borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: tagTextColor.withValues(alpha: isDark ? 0.35 : 0.2),
+                                  width: 1,
+                                ),
                               ),
                               child: Text(
                                 tag,
-                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: tagColor),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.4,
+                                  color: tagTextColor,
+                                ),
                               ),
                             ),
                           ],
@@ -720,9 +776,27 @@ class _PlayScreenState extends ConsumerState<PlayScreen> with SingleTickerProvid
                 ],
               ),
               const SizedBox(height: 14),
-              OutlinedButton(
+              ElevatedButton(
                 onPressed: onTap,
-                child: Text(actionText),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: DuoColors.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 1,
+                  shadowColor: DuoColors.primary.withValues(alpha: 0.3),
+                  minimumSize: const Size(double.infinity, 44),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      actionText,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    const SizedBox(width: 6),
+                    const Icon(Icons.arrow_forward_rounded, size: 16),
+                  ],
+                ),
               ),
             ],
           ),
