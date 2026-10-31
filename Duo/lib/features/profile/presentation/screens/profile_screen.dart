@@ -13,9 +13,11 @@ import '../../../together/presentation/providers/together_provider.dart';
 import '../../../pairing/presentation/providers/pairing_provider.dart';
 import '../../../prayer/presentation/providers/prayer_provider.dart';
 import '../providers/subscription_provider.dart';
+import '../providers/special_dates_provider.dart';
 import 'premium_paywall_screen.dart';
 import '../widgets/couple_wrapped_sheet.dart';
 import '../widgets/widget_preview_dialog.dart';
+import '../widgets/edit_special_date_sheet.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/localization/duo_strings.dart';
 import '../../../../core/localization/duo_formatters.dart';
@@ -31,6 +33,7 @@ class ProfileScreen extends ConsumerWidget {
     final pairingState = ref.watch(pairingProvider);
     final subState = ref.watch(subscriptionProvider);
     final prayerState = ref.watch(prayerProvider);
+    final specialDates = ref.watch(specialDatesProvider);
     final client = ref.watch(supabaseClientProvider);
 
     final currentUser = client.auth.currentUser;
@@ -148,6 +151,10 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: 16),
+
+          // 1.5 Special Dates & Milestones Card
+          _buildSpecialDatesCard(context, ref, locale, isDark, specialDates, myName, partnerName),
           const SizedBox(height: 16),
 
           // 2. Duo Premium Banner (Connected to subscriptionProvider)
@@ -738,6 +745,213 @@ class ProfileScreen extends ConsumerWidget {
             child: const Text('Disconnect', style: TextStyle(color: Colors.white)),
           ),
         ],
+      ),
+    );
+  }
+
+  void _openEditSpecialDate(BuildContext context, SpecialDateMode mode, String myName, String partnerName) {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (_) => EditSpecialDateSheet(
+        mode: mode,
+        myName: myName,
+        partnerName: partnerName,
+      ),
+    );
+  }
+
+  Widget _buildSpecialDatesCard(
+    BuildContext context,
+    WidgetRef ref,
+    String locale,
+    bool isDark,
+    SpecialDatesState specialDates,
+    String myName,
+    String partnerName,
+  ) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: DuoColors.primary.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Text('💍', style: TextStyle(fontSize: 18)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DuoStrings.get('special_dates_title', locale),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        specialDates.daysTogether != null
+                            ? (locale == 'bn'
+                                ? 'একসাথে ${DuoFormatters.formatNumber(specialDates.daysTogether!, locale)} দিন ভালোবাসার পথচলা 💕'
+                                : 'Together for ${DuoFormatters.formatNumber(specialDates.daysTogether!, locale)} days in love 💕')
+                            : DuoStrings.get('special_dates_sub', locale),
+                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Divider(height: 1, color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.06)),
+            const SizedBox(height: 12),
+
+            // 1. Anniversary Row
+            _buildDateRow(
+              context,
+              icon: '💍',
+              title: DuoStrings.get('our_anniversary', locale),
+              subtitle: specialDates.anniversaryDate != null
+                  ? '${specialDates.anniversaryType.toUpperCase()} • ${DuoFormatters.formatDate(specialDates.anniversaryDate!, locale)}'
+                  : DuoStrings.get('set_date_prompt', locale),
+              badgeText: specialDates.daysUntilNextAnniversary != null
+                  ? (locale == 'bn'
+                      ? '${DuoFormatters.formatNumber(specialDates.daysUntilNextAnniversary!, locale)} দিন বাকি'
+                      : '${specialDates.daysUntilNextAnniversary}d left')
+                  : null,
+              isSet: specialDates.anniversaryDate != null,
+              isDark: isDark,
+              onTap: () => _openEditSpecialDate(context, SpecialDateMode.anniversary, myName, partnerName),
+            ),
+            const SizedBox(height: 10),
+
+            // 2. My Birthday Row
+            _buildDateRow(
+              context,
+              icon: '🎂',
+              title: DuoStrings.get('my_birthday', locale),
+              subtitle: specialDates.myBirthdate != null
+                  ? DuoFormatters.formatDate(specialDates.myBirthdate!, locale)
+                  : DuoStrings.get('set_date_prompt', locale),
+              badgeText: specialDates.getDaysUntilBirthday(specialDates.myBirthdate) != null
+                  ? (locale == 'bn'
+                      ? '${DuoFormatters.formatNumber(specialDates.getDaysUntilBirthday(specialDates.myBirthdate)!, locale)} দিন বাকি'
+                      : '${specialDates.getDaysUntilBirthday(specialDates.myBirthdate)}d left')
+                  : null,
+              isSet: specialDates.myBirthdate != null,
+              isDark: isDark,
+              onTap: () => _openEditSpecialDate(context, SpecialDateMode.myBirthday, myName, partnerName),
+            ),
+            const SizedBox(height: 10),
+
+            // 3. Partner Birthday Row
+            _buildDateRow(
+              context,
+              icon: '🎉',
+              title: DuoStrings.get('partner_birthday', locale, params: {'name': partnerName}),
+              subtitle: specialDates.partnerBirthdate != null
+                  ? DuoFormatters.formatDate(specialDates.partnerBirthdate!, locale)
+                  : DuoStrings.get('set_date_prompt', locale),
+              badgeText: specialDates.getDaysUntilBirthday(specialDates.partnerBirthdate) != null
+                  ? (locale == 'bn'
+                      ? '${DuoFormatters.formatNumber(specialDates.getDaysUntilBirthday(specialDates.partnerBirthdate)!, locale)} দিন বাকি'
+                      : '${specialDates.getDaysUntilBirthday(specialDates.partnerBirthdate)}d left')
+                  : null,
+              isSet: specialDates.partnerBirthdate != null,
+              isDark: isDark,
+              onTap: () => _openEditSpecialDate(context, SpecialDateMode.partnerBirthday, myName, partnerName),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateRow(
+    BuildContext context, {
+    required String icon,
+    required String title,
+    required String subtitle,
+    required String? badgeText,
+    required bool isSet,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.white.withValues(alpha: 0.04) : DuoColors.bgLight,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSet ? DuoColors.primary.withValues(alpha: 0.15) : Colors.transparent,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(icon, style: const TextStyle(fontSize: 20)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isSet ? (isDark ? Colors.grey[300] : Colors.grey[700]) : DuoColors.primary,
+                      fontWeight: isSet ? FontWeight.normal : FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (badgeText != null) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: isDark ? DuoColors.accent.withValues(alpha: 0.22) : const Color(0xFFFEF3C7),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  badgeText,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: DuoColors.getAccessibleTextColor(DuoColors.accent, isDark: isDark),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Icon(
+              isSet ? Icons.edit_calendar_rounded : Icons.add_circle_outline_rounded,
+              size: 18,
+              color: isSet ? Colors.grey : DuoColors.primary,
+            ),
+          ],
+        ),
       ),
     );
   }

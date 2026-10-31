@@ -176,6 +176,41 @@ class DuoStrings {
       'bn': 'অ্যাকাউন্ট ও সম্পর্ক নিয়ন্ত্রণ ⚙️'
     },
     'connected_since': {'en': 'Connected since', 'bn': 'যুক্ত হয়েছেন'},
+    'special_dates_title': {
+      'en': 'Special Dates & Milestones',
+      'bn': 'আমাদের বিশেষ দিনসমূহ'
+    },
+    'special_dates_sub': {
+      'en': 'Anniversary, birthdays & love counter',
+      'bn': 'বার্ষিকী, জন্মদিন ও লাভ কাউন্টার'
+    },
+    'our_anniversary': {'en': 'Our Anniversary', 'bn': 'আমাদের বার্ষিকী'},
+    'anniversary_dating': {'en': 'Started Dating', 'bn': 'সম্পর্কের শুরু'},
+    'anniversary_wedding': {'en': 'Wedding Anniversary', 'bn': 'বিবাহবার্ষিকী'},
+    'anniversary_engaged': {'en': 'Engagement Day', 'bn': 'বাগদান দিন'},
+    'my_birthday': {'en': 'My Birthday', 'bn': 'আমার জন্মদিন'},
+    'partner_birthday': {
+      'en': "{name}'s Birthday",
+      'bn': '{name}-এর জন্মদিন'
+    },
+    'set_date_prompt': {'en': 'Tap to set date', 'bn': 'তারিখ সেট করতে ট্যাপ করুন'},
+    'days_together_counter': {
+      'en': '{days} Days Together',
+      'bn': '{days} দিন একসাথে'
+    },
+    'next_anniversary_in': {
+      'en': '{days}d to {count} Anniversary',
+      'bn': '{count} বার্ষিকীর বাকি {days} দিন'
+    },
+    'next_birthday_in': {
+      'en': 'Turns {age} in {days}d',
+      'bn': '{days} দিন পর {age} বছর পূর্ণ হবে'
+    },
+    'special_date_updated': {
+      'en': 'Special date saved & synced! ✨',
+      'bn': 'বিশেষ তারিখ সংরক্ষিত ও সিঙ্ক হয়েছে! ✨'
+    },
+    'anniversary_type': {'en': 'Anniversary Type', 'bn': 'বার্ষিকীর ধরন'},
     'duo_premium_active': {
       'en': 'Duo Premium Active',
       'bn': 'ডুও প্রিমিয়াম সক্রিয়'

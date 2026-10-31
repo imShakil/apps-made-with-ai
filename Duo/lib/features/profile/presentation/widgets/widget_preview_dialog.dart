@@ -9,6 +9,7 @@ import '../../../home/presentation/providers/mood_provider.dart';
 import '../../../pairing/presentation/providers/pairing_provider.dart';
 import '../../../together/presentation/providers/together_provider.dart';
 import '../../../prayer/presentation/providers/prayer_provider.dart';
+import '../providers/special_dates_provider.dart';
 
 class WidgetPreviewDialog extends ConsumerStatefulWidget {
   const WidgetPreviewDialog({super.key});
@@ -36,14 +37,19 @@ class _WidgetPreviewDialogState extends ConsumerState<WidgetPreviewDialog> {
     final moodState = ref.watch(moodProvider);
     final togetherState = ref.watch(togetherProvider);
     final prayerState = ref.watch(prayerProvider);
+    final specialDates = ref.watch(specialDatesProvider);
 
     final partnerName = pairing.partner?['display_name'] as String? ?? 'Partner';
     final partnerMood = moodState.partnerMood ?? 'loved';
     final heroEvent = togetherState.heroCountdown;
-    final heroTitle = heroEvent?['title'] as String? ?? 'Our Next Milestone';
     final targetStr = heroEvent?['target_date'] as String?;
     final target = targetStr != null ? DateTime.tryParse(targetStr) : null;
-    final daysLeft = target != null ? target.difference(DateTime.now()).inDays : 12;
+
+    final heroTitle = specialDates.daysUntilNextAnniversary != null
+        ? '${specialDates.nextAnniversaryYearCount ?? 1}-Year ${specialDates.anniversaryType == 'wedding' ? 'Anniversary' : 'Anniversary'}'
+        : (heroEvent?['title'] as String? ?? 'Our Next Milestone');
+    final daysLeft = specialDates.daysUntilNextAnniversary ??
+        (target != null ? target.difference(DateTime.now()).inDays : 12);
 
     _syncWidgetCache(partnerName, '🥰', heroTitle, daysLeft);
 

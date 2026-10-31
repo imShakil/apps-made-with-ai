@@ -20,6 +20,7 @@ import '../../../prayer/presentation/widgets/prayer_tracker_card.dart';
 import '../providers/heartbeat_provider.dart';
 import '../widgets/heartbeat_button.dart';
 import '../widgets/proximity_hug_dialog.dart';
+import '../../../profile/presentation/providers/special_dates_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -128,6 +129,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final moodState = ref.watch(moodProvider);
     final questionState = ref.watch(dailyQuestionProvider);
     final togetherState = ref.watch(togetherProvider);
+    final specialDates = ref.watch(specialDatesProvider);
 
     final myName = user?.userMetadata?['full_name'] as String? ?? 'You';
     final partnerName = pairingState.partner?['display_name'] as String? ?? 'Partner';
@@ -194,7 +196,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       appBar: DuoAppBar(
         title: DuoStrings.get('app_title', locale),
-        subtitle: '$greeting • $coupleGreeting',
+        subtitle: specialDates.daysTogether != null
+            ? '$coupleGreeting • 💕 ${DuoFormatters.formatNumber(specialDates.daysTogether!, locale)} ${locale == 'bn' ? 'দিন একসাথে' : 'days together'}'
+            : '$greeting • $coupleGreeting',
         actions: const [
           HeartbeatButton(),
           SizedBox(width: 8),
